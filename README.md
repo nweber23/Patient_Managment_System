@@ -14,18 +14,6 @@ This program helps manage patients in a waiting room. Emergency patients 🚨 ge
 - 📞 Call next patient
 - ✅ Input validation for names, ages, and dates
 
-## 🚀 How to run
-
-1. Make sure you have Java installed ☕
-2. Compile the code:
-   ```bash
-   javac *.java
-   ```
-3. Run the program:
-   ```bash
-   java Main
-   ```
-
 ## 📖 How to use
 
 The program shows you a menu with 5 options:
@@ -62,11 +50,9 @@ You'll need to enter:
 
 Some easy features that could be added:
 - 🔍 Search for a patient by name
-- ❌ Remove a patient from the queue
 - ⏰ Show how long each patient has been waiting
 - 📊 Display total patients served today
 - 💾 Save patient data to a text file
-- 🎨 Add colors to the console output
 
 ---
 
