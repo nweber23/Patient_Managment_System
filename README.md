@@ -12,17 +12,20 @@ This program helps manage patients in a waiting room. Emergency patients 🚨 ge
 - 👥 Regular patients wait in line  
 - 📋 View all patients in waiting room
 - 📞 Call next patient
+- ❌ Remove specific patients from queue
+- 🎨 Colorful console interface
 - ✅ Input validation for names, ages, and dates
 
 ## 📖 How to use
 
-The program shows you a menu with 5 options:
+The program shows you a colorful menu with 6 options:
 
-1. **Add Patient** ➕ - Add new patient (emergency or regular)
-2. **Print Waiting Room** 📋 - See all patients waiting
-3. **Print Next Patient** 👁️ - See who's next in line  
-4. **Call Next Patient** 📞 - Remove next patient from queue
-5. **Exit** 🚪 - Quit the program
+1. **Add Patient** 🟢 - Add new patient (emergency or regular)
+2. **Print Waiting Room** 🔵 - See all patients waiting
+3. **Print Next Patient** 🔵 - See who's next in line  
+4. **Call Next Patient** 🟣 - Remove next patient from queue
+5. **Remove Patient** 🟡 - Remove a specific patient by name
+6. **Exit** 🔴 - Quit the program
 
 ### Adding a patient
 You'll need to enter:
