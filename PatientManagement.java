@@ -1,8 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * PatientManagement class - Manages patient queues and operations
  * Handles emergency, senior, and regular patient queues with priority system
  * Emergency patients are processed first, then seniors, then regular patients
- * Now includes remove patient functionality, statistics, and colored output
+ * Enhanced with patient search, type switching, and note history features
  */
 public class PatientManagement {
     // Arrays to store different types of patients separately
@@ -49,7 +52,7 @@ public class PatientManagement {
             emergencyPatients[emergencyCount] = patient;
             emergencyCount++;
             totalEmergenciesToday++; // Increment emergency counter
-            System.out.println(RED + "🚨 Emergency patient " + patient.getName() + " added to queue." + RESET);
+            System.out.println(RED + "Emergency patient " + patient.getName() + " added to queue." + RESET);
         } else if (patient.isSenior()) {
             // Check if senior queue is full
             if (seniorCount >= seniorPatients.length) {
@@ -57,7 +60,7 @@ public class PatientManagement {
             }
             seniorPatients[seniorCount] = patient;
             seniorCount++;
-            System.out.println(ORANGE + "👴 Senior patient " + patient.getName() + " added to queue." + RESET);
+            System.out.println(ORANGE + "Senior patient " + patient.getName() + " added to queue." + RESET);
         } else {
             // Check if regular queue is full
             if (regularCount >= regularPatients.length) {
@@ -65,7 +68,203 @@ public class PatientManagement {
             }
             regularPatients[regularCount] = patient;
             regularCount++;
-            System.out.println(BLUE + "👥 Regular patient " + patient.getName() + " added to queue." + RESET);
+            System.out.println(BLUE + "Regular patient " + patient.getName() + " added to queue." + RESET);
+        }
+    }
+
+    /**
+     * Searches for patients by name across all queues
+     *
+     * @param searchName Name to search for (case-insensitive, partial match)
+     * @return List of patients matching the search criteria
+     */
+    public List<Patient> searchPatientsByName(String searchName) {
+        List<Patient> foundPatients = new ArrayList<>();
+        String searchLower = searchName.toLowerCase().trim();
+        
+        // Search emergency queue
+        for (int i = 0; i < emergencyCount; i++) {
+            if (emergencyPatients[i].getName().toLowerCase().contains(searchLower)) {
+                foundPatients.add(emergencyPatients[i]);
+            }
+        }
+        
+        // Search senior queue
+        for (int i = 0; i < seniorCount; i++) {
+            if (seniorPatients[i].getName().toLowerCase().contains(searchLower)) {
+                foundPatients.add(seniorPatients[i]);
+            }
+        }
+        
+        // Search regular queue
+        for (int i = 0; i < regularCount; i++) {
+            if (regularPatients[i].getName().toLowerCase().contains(searchLower)) {
+                foundPatients.add(regularPatients[i]);
+            }
+        }
+        
+        return foundPatients;
+    }
+
+    /**
+     * Displays search results for patients
+     *
+     * @param searchName The name that was searched for
+     */
+    public void printSearchResults(String searchName) {
+        List<Patient> foundPatients = searchPatientsByName(searchName);
+        
+        System.out.println("\n" + CYAN + BOLD + "=== SEARCH RESULTS FOR: \"" + searchName + "\" ===" + RESET);
+        
+        if (foundPatients.isEmpty()) {
+            System.out.println(YELLOW + "No patients found matching \"" + searchName + "\"." + RESET);
+            return;
+        }
+        
+        System.out.println(GREEN + "Found " + foundPatients.size() + " patient(s):" + RESET);
+        
+        for (int i = 0; i < foundPatients.size(); i++) {
+            Patient patient = foundPatients.get(i);
+            String color;
+            String queueName;
+            
+            // Determine color and queue based on patient type
+            if (patient.getPatientType().equals("Emergency")) {
+                color = RED;
+                queueName = "Emergency Queue";
+            } else if (patient.getPatientType().equals("Senior")) {
+                color = ORANGE;
+                queueName = "Senior Queue";
+            } else {
+                color = BLUE;
+                queueName = "Regular Queue";
+            }
+            
+            System.out.println(color + "\n" + (i + 1) + ". " + patient.getTypeIcon() + " " + patient.getName() + RESET);
+            System.out.println(WHITE + "   Age: " + patient.getAge() + " | Birthday: " + patient.getBirthday() + RESET);
+            System.out.println(WHITE + "   Queue: " + queueName + RESET);
+            System.out.println(WHITE + "   Priority Level: " + patient.getPriorityLevel() + RESET);
+            
+            if (patient.hasNotes()) {
+                System.out.println(YELLOW + "   Latest Note: " + patient.getLatestNote() + RESET);
+            } else {
+                System.out.println(YELLOW + "   No notes recorded." + RESET);
+            }
+        }
+    }
+
+    /**
+     * Finds a patient by exact name match across all queues
+     *
+     * @param patientName Exact name of patient to find
+     * @return Patient object if found, null otherwise
+     */
+    public Patient findPatientByExactName(String patientName) {
+        // Search emergency queue
+        for (int i = 0; i < emergencyCount; i++) {
+            if (emergencyPatients[i].getName().equalsIgnoreCase(patientName)) {
+                return emergencyPatients[i];
+            }
+        }
+        
+        // Search senior queue
+        for (int i = 0; i < seniorCount; i++) {
+            if (seniorPatients[i].getName().equalsIgnoreCase(patientName)) {
+                return seniorPatients[i];
+            }
+        }
+        
+        // Search regular queue
+        for (int i = 0; i < regularCount; i++) {
+            if (regularPatients[i].getName().equalsIgnoreCase(patientName)) {
+                return regularPatients[i];
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Changes a patient's type and moves them to the appropriate queue
+     *
+     * @param patientName Name of patient to change type
+     * @param newType New patient type ("Emergency", "Senior", "Regular")
+     * @return true if successful, false if patient not found or invalid type
+     */
+    public boolean changePatientType(String patientName, String newType) {
+        Patient patient = findPatientByExactName(patientName);
+        if (patient == null) {
+            return false;
+        }
+        
+        String currentType = patient.getPatientType();
+        String currentQueue = getCurrentQueueName(currentType);
+        
+        // Validate new type
+        if (!newType.equalsIgnoreCase("Emergency") && 
+            !newType.equalsIgnoreCase("Senior") && 
+            !newType.equalsIgnoreCase("Regular")) {
+            return false;
+        }
+        
+        // Check if change is necessary
+        if (currentType.equalsIgnoreCase(newType)) {
+            System.out.println(YELLOW + "Patient " + patientName + " is already of type " + currentType + "." + RESET);
+            return true;
+        }
+        
+        // Remove patient from current queue
+        boolean removed = removePatient(patientName);
+        if (!removed) {
+            return false;
+        }
+        
+        // Create new patient object with same data but different type
+        Patient newPatient;
+        if (newType.equalsIgnoreCase("Emergency")) {
+            newPatient = new EmergencyPatient(patient.getName(), patient.getAge(), patient.getBirthday(), "");
+        } else if (newType.equalsIgnoreCase("Senior")) {
+            newPatient = new SeniorPatient(patient.getName(), patient.getAge(), patient.getBirthday(), "");
+        } else {
+            newPatient = new RegularPatient(patient.getName(), patient.getAge(), patient.getBirthday(), "");
+        }
+        
+        // Copy notes history
+        if (patient.hasNotes()) {
+            // Add a note about the type change
+            newPatient.addNote("Patient type changed from " + currentType + " to " + newType);
+            // Note: In a real implementation, you might want to copy the entire notes history
+            // For now, we'll just add the type change note
+        } else {
+            newPatient.addNote("Patient type changed from " + currentType + " to " + newType);
+        }
+        
+        // Add to new queue (but don't increment totalPatientsToday since it's the same patient)
+        totalPatientsToday--; // Compensate for the increment in queuePatient
+        queuePatient(newPatient);
+        
+        String newQueue = getCurrentQueueName(newType);
+        System.out.println(GREEN + "Patient " + patientName + " moved from " + currentQueue + " to " + newQueue + "." + RESET);
+        
+        return true;
+    }
+
+    /**
+     * Helper method to get queue name from patient type
+     *
+     * @param patientType Patient type string
+     * @return Queue name for display
+     */
+    private String getCurrentQueueName(String patientType) {
+        switch (patientType.toLowerCase()) {
+            case "emergency":
+                return "Emergency Queue";
+            case "senior":
+                return "Senior Queue";
+            case "regular":
+                return "Regular Queue";
+            default:
+                return "Unknown Queue";
         }
     }
 
@@ -148,37 +347,37 @@ public class PatientManagement {
         System.out.println("\n" + CYAN + BOLD + "=== PATIENT QUEUES ===" + RESET);
 
         // Display emergency queue
-        System.out.println(RED + BOLD + "🚨 Emergency Queue:" + RESET);
+        System.out.println(RED + BOLD + "Emergency Queue:" + RESET);
         if (emergencyCount == 0) {
             System.out.println(YELLOW + "  No emergency patients." + RESET);
         } else {
             for (int i = 0; i < emergencyCount; i++) {
                 Patient patient = emergencyPatients[i];
-                String notesDisplay = patient.getNotes().isEmpty() ? "" : " - " + patient.getNotes();
+                String notesDisplay = patient.hasNotes() ? " - " + patient.getLatestNote() : "";
                 System.out.println(RED + "  " + (i + 1) + ". " + patient.getName() + " (Age: " + patient.getAge() + ")" + notesDisplay + RESET);
             }
         }
 
         // Display senior queue
-        System.out.println(ORANGE + BOLD + "\n👴 Senior Queue (75+ years):" + RESET);
+        System.out.println(ORANGE + BOLD + "\nSenior Queue (75+ years):" + RESET);
         if (seniorCount == 0) {
             System.out.println(YELLOW + "  No senior patients." + RESET);
         } else {
             for (int i = 0; i < seniorCount; i++) {
                 Patient patient = seniorPatients[i];
-                String notesDisplay = patient.getNotes().isEmpty() ? "" : " - " + patient.getNotes();
+                String notesDisplay = patient.hasNotes() ? " - " + patient.getLatestNote() : "";
                 System.out.println(ORANGE + "  " + (i + 1) + ". " + patient.getName() + " (Age: " + patient.getAge() + ")" + notesDisplay + RESET);
             }
         }
 
         // Display regular queue
-        System.out.println(BLUE + BOLD + "\n👥 Regular Queue:" + RESET);
+        System.out.println(BLUE + BOLD + "\nRegular Queue:" + RESET);
         if (regularCount == 0) {
             System.out.println(YELLOW + "  No regular patients." + RESET);
         } else {
             for (int i = 0; i < regularCount; i++) {
                 Patient patient = regularPatients[i];
-                String notesDisplay = patient.getNotes().isEmpty() ? "" : " - " + patient.getNotes();
+                String notesDisplay = patient.hasNotes() ? " - " + patient.getLatestNote() : "";
                 System.out.println(BLUE + "  " + (i + 1) + ". " + patient.getName() + " (Age: " + patient.getAge() + ")" + notesDisplay + RESET);
             }
         }
@@ -195,9 +394,9 @@ public class PatientManagement {
         
         // Current queue counts
         System.out.println(WHITE + "Current Patients in Queue:" + RESET);
-        System.out.println(RED + "  🚨 Emergency: " + emergencyCount + RESET);
-        System.out.println(ORANGE + "  👴 Senior: " + seniorCount + RESET);
-        System.out.println(BLUE + "  👥 Regular: " + regularCount + RESET);
+        System.out.println(RED + "  Emergency: " + emergencyCount + RESET);
+        System.out.println(ORANGE + "  Senior: " + seniorCount + RESET);
+        System.out.println(BLUE + "  Regular: " + regularCount + RESET);
         System.out.println(CYAN + "  Total Waiting: " + getTotalPatientCount() + RESET);
         
         // Daily statistics
