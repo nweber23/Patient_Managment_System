@@ -29,16 +29,16 @@ This program manages patients in a medical waiting room using a three-tier prior
 
 ## 📖 Menu Options
 
-1. **Add Patient** 🟢 - Register new patient
+1. **Add Patient** 🔵 - Register new patient
 2. **Print Waiting Room** 🔵 - View all patients
 3. **Print Next Patient** 🔵 - See who's next
-4. **Call Up Next Patient** 🟣 - Process next patient
-5. **Remove Patient** 🟡 - Remove by name
-6. **View Statistics** 🟠 - Display analytics
-7. **Add Patient Notes** 🟣 - Add timestamped notes
+4. **Call Up Next Patient** 🟢 - Process next patient
+5. **Remove Patient** 🔴 - Remove by name
+6. **View Statistics** 🔵 - Display analytics
+7. **Add Patient Notes** 🔵 - Add timestamped notes
 8. **Search Patient by Name** 🔵 - Find patients quickly
 9. **Change Patient Type** 🟡 - Switch priority levels
-10. **View Patient Note History** 🟢 - Complete note timeline
+10. **View Patient Note History** 🔵 - Complete note timeline
 11. **Exit** 🔴 - Quit safely
 
 ## 🎯 Priority System
