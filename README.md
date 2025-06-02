@@ -49,44 +49,33 @@ You'll need to enter:
 - `EmergencyPatient.java` - Emergency patient type
 - `RegularPatient.java` - Regular patient type
 
-## 🧪 Additional Easy Implementations
-Here are some simple improvements you can add to your program:
+## 🧪 Additional easy features to add
 
-🕒 Show Patient Wait Time
-Display how long each patient has been waiting (in minutes), based on their check-in time.
+Some more simple features you could implement:
 
-📅 Show Today's Patients
-Filter and display only the patients who were added today.
+- 🕒 **Show how long each patient has been waiting**  
+  Calculate and display wait time in minutes using check-in time.
 
-🧓 Prioritize Senior Patients
-Give patients aged 75+ higher priority than regular patients, just below emergency cases.
+- 📅 **List only patients who arrived today**  
+  Filter the waiting list by today’s date.
 
-💬 Add Notes to Patients
-Allow users to add an optional note or comment when adding a new patient (e.g., "severe pain", "accompanied by mother").
+- 🧓 **Give priority to senior patients (e.g. age 75+)**  
+  Add a new priority level between emergency and regular patients.
 
-📈 View Statistics
-Add a menu option to show basic statistics:
+- 💬 **Add optional notes/comments to each patient**  
+  Allow adding short notes like “severe pain” or “needs assistance”.
 
-Total patients added today
+- 📈 **Show statistics**  
+  Display total patients today, number of emergencies, and average age.
 
-Number of emergency patients
+- 🔄 **Recall last called patient if not present**  
+  Let users re-call the most recently removed patient.
 
-Average age of all patients
+- 🧾 **Export patient list to a `.csv` file**  
+  Save current queue data to a file for external viewing.
 
-🔄 Recall Last Called Patient
-If the last called patient didn’t respond, allow re-adding them to the queue.
-
-🧾 Export Patient List to CSV
-Export the current queue to a .csv file including name, age, birthday, emergency status, and wait time.
-
-🖼️ Add Icons or ASCII Tags
-Add visual tags to patient types in the console output:
-
-🚨 [EMERGENCY]
-
-👴 [Senior]
-
-👥 [Regular]
+- 🖼️ **Add icons/tags for emergency, senior, and regular patients**  
+  Example: `🚨 [EMERGENCY]`, `👴 [Senior]`, `👥 [Regular]`
 
 ---
 
