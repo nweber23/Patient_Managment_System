@@ -49,13 +49,44 @@ You'll need to enter:
 - `EmergencyPatient.java` - Emergency patient type
 - `RegularPatient.java` - Regular patient type
 
-## 🔧 Possible improvements
+## 🧪 Additional Easy Implementations
+Here are some simple improvements you can add to your program:
 
-Some easy features that could be added:
-- 🔍 Search for a patient by name
-- ⏰ Show how long each patient has been waiting
-- 📊 Display total patients served today
-- 💾 Save patient data to a text file
+🕒 Show Patient Wait Time
+Display how long each patient has been waiting (in minutes), based on their check-in time.
+
+📅 Show Today's Patients
+Filter and display only the patients who were added today.
+
+🧓 Prioritize Senior Patients
+Give patients aged 75+ higher priority than regular patients, just below emergency cases.
+
+💬 Add Notes to Patients
+Allow users to add an optional note or comment when adding a new patient (e.g., "severe pain", "accompanied by mother").
+
+📈 View Statistics
+Add a menu option to show basic statistics:
+
+Total patients added today
+
+Number of emergency patients
+
+Average age of all patients
+
+🔄 Recall Last Called Patient
+If the last called patient didn’t respond, allow re-adding them to the queue.
+
+🧾 Export Patient List to CSV
+Export the current queue to a .csv file including name, age, birthday, emergency status, and wait time.
+
+🖼️ Add Icons or ASCII Tags
+Add visual tags to patient types in the console output:
+
+🚨 [EMERGENCY]
+
+👴 [Senior]
+
+👥 [Regular]
 
 ---
 
