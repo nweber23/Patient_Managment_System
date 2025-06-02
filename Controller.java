@@ -6,62 +6,36 @@ import java.util.Scanner;
 
 /**
  * Controller class - Main controller for the Patient Management System
- * Handles user interface, input validation, and coordinates between user and PatientManagement
- * Provides menu-driven interface for managing patients with color support
- * Enhanced with statistics functionality and improved patient management
- * Now includes patient search, note history, and patient type switching with age validation
+ * Provides a console-based interface for patient queue management with priority handling
  */
 public class Controller {
-	// Core components
+	// Core system components
 	private PatientManagement patientManagement;
 	private Scanner scanner;
-
-	// Date formatter for birthday input
+	
+	// Date format for consistent birthday input validation
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	// ANSI Color codes for console output - Enhanced with more unique colors
+	// ANSI color codes for enhanced console output
 	public static final String RESET = "\u001B[0m";
-	public static final String RED = "\u001B[31m";
-	public static final String GREEN = "\u001B[32m";
-	public static final String YELLOW = "\u001B[33m";
-	public static final String BLUE = "\u001B[34m";
-	public static final String PURPLE = "\u001B[35m";
-	public static final String CYAN = "\u001B[36m";
-	public static final String WHITE = "\u001B[37m";
-	public static final String BOLD = "\u001B[1m";
-	public static final String ORANGE = "\u001B[38;5;208m";
-	public static final String BRIGHT_RED = "\u001B[91m";
-	public static final String BRIGHT_GREEN = "\u001B[92m";
-	public static final String BRIGHT_YELLOW = "\u001B[93m";
-	public static final String BRIGHT_BLUE = "\u001B[94m";
-	public static final String BRIGHT_MAGENTA = "\u001B[95m";
-	public static final String BRIGHT_CYAN = "\u001B[96m";
-	public static final String BRIGHT_WHITE = "\u001B[97m";
-	public static final String DARK_GRAY = "\u001B[90m";
-	public static final String LIGHT_GRAY = "\u001B[37m";
-	public static final String GOLD = "\u001B[38;5;220m";
-	public static final String PINK = "\u001B[38;5;205m";
-	public static final String LIME = "\u001B[38;5;154m";
-	public static final String TEAL = "\u001B[38;5;51m";
-	public static final String LAVENDER = "\u001B[38;5;183m";
+	public static final String RED = "\u001B[31m";      // Error messages
+	public static final String GREEN = "\u001B[32m";    // Success messages
+	public static final String YELLOW = "\u001B[33m";   // Warnings and headers
+	public static final String BLUE = "\u001B[34m";     // Information
+	public static final String CYAN = "\u001B[36m";     // Highlights
+	public static final String BOLD = "\u001B[1m";      // Emphasis
 
-	/**
-	 * Constructor for Controller
-	 * Initializes PatientManagement system and Scanner for user input
-	 */
 	public Controller() {
 		patientManagement = new PatientManagement();
 		scanner = new Scanner(System.in);
 	}
 
 	/**
-	 * Main application loop
-	 * Displays menu, gets user choice, and executes corresponding action
-	 * Continues until user chooses to exit
+	 * Main application loop - displays menu and processes user choices
+	 * Continues until user selects exit option (11)
 	 */
 	public void run() {
-		System.out.println(TEAL + BOLD + "Welcome to the Patient Management System!" + RESET);
-		System.out.println(TEAL + "========================================" + RESET);
+		System.out.println(CYAN + BOLD + "Welcome to the Patient Management System!" + RESET);
 
 		int choice;
 		do {
@@ -70,340 +44,98 @@ public class Controller {
 			executeChoice(choice);
 		} while (choice != 11);
 
-		// Clean up resources
 		scanner.close();
-		System.out.println(LIME + "Thank you for using the Patient Management System. Goodbye!" + RESET);
+		System.out.println(GREEN + "Thank you for using the Patient Management System. Goodbye!" + RESET);
 	}
 
-	/**
-	 * Displays the main menu options to the user with unique colors
-	 */
-	private void printMenu() {
-		System.out.println("\n" + GOLD + "====================" + RESET);
-		System.out.println(GOLD + BOLD + "Patient Management System" + RESET);
-		System.out.println(GOLD + "====================" + RESET);
-		System.out.println(BRIGHT_GREEN + "[1] Add Patient" + RESET);
-		System.out.println(BRIGHT_CYAN + "[2] Print Waiting Room" + RESET);
-		System.out.println(BRIGHT_BLUE + "[3] Print Next Patient" + RESET);
-		System.out.println(BRIGHT_MAGENTA + "[4] Call Up Next Patient" + RESET);
-		System.out.println(BRIGHT_YELLOW + "[5] Remove Patient" + RESET);
-		System.out.println(ORANGE + "[6] View Statistics" + RESET);
-		System.out.println(LAVENDER + "[7] Add Patient Notes" + RESET);
-		System.out.println(TEAL + "[8] Search Patient by Name" + RESET);
-		System.out.println(PINK + "[9] Change Patient Type" + RESET);
-		System.out.println(LIME + "[10] View Patient Note History" + RESET);
-		System.out.println(BRIGHT_RED + "[11] Exit" + RESET);
-		System.out.println(GOLD + "====================" + RESET);
-	}
+/**
+ * Displays the main menu with all available options
+ * Enhanced with color coding for better visual organization
+ */
+private void printMenu() {
+	System.out.println("\n" + YELLOW + BOLD + "=== Patient Management System ===" + RESET);
+	System.out.println(CYAN + "[1] Add Patient");
+	System.out.println(BLUE + "[2] Print Waiting Room");
+	System.out.println(BLUE + "[3] Print Next Patient");
+	System.out.println(GREEN + "[4] Call Up Next Patient");
+	System.out.println(RED + "[5] Remove Patient");
+	System.out.println(BLUE + "[6] View Statistics");
+	System.out.println(CYAN + "[7] Add Patient Notes");
+	System.out.println(BLUE + "[8] Search Patient by Name");
+	System.out.println(YELLOW + "[9] Change Patient Type");
+	System.out.println(BLUE + "[10] View Patient Note History");
+	System.out.println(RED + BOLD + "[11] Exit" + RESET);
+	System.out.println(YELLOW + BOLD + "==============================" + RESET);
+}
 
 	/**
-	 * Gets and validates user's menu choice
-	 * Handles invalid input gracefully
-	 *
+	 * Gets and validates user's menu choice with input validation
+	 * Handles invalid input gracefully and repeats until valid choice
 	 * @return Valid menu choice (1-11)
 	 */
 	private int getChoice() {
 		int choice = -1;
-		boolean validInput = false;
-
-		while (!validInput) {
+		while (choice < 1 || choice > 11) {
 			try {
-				System.out.print(BRIGHT_WHITE + "Enter choice (1-11): " + RESET);
+				System.out.print(YELLOW + BOLD + "Enter choice (1-11): " + RESET);
 				choice = scanner.nextInt();
-				scanner.nextLine(); // Consume the leftover newline
-
-				if (choice >= 1 && choice <= 11) {
-					validInput = true;
-				} else {
-					System.out.println(BRIGHT_RED + "Please enter a number between 1 and 11." + RESET);
+				scanner.nextLine(); // Consume leftover newline
+				if (choice < 1 || choice > 11) {
+					System.out.println(RED + "Please enter a number between 1 and 11." + RESET);
 				}
-
 			} catch (InputMismatchException e) {
-				System.out.println(BRIGHT_RED + "Invalid input! Please enter a number between 1 and 11." + RESET);
-				scanner.nextLine(); // Clear the invalid input
+				System.out.println(RED + "Invalid input! Please enter a number." + RESET);
+				scanner.nextLine(); // Clear invalid input buffer
 			}
 		}
-
 		return choice;
 	}
 
 	/**
 	 * Executes the action corresponding to user's menu choice
-	 *
-	 * @param choice User's menu selection
+	 * Includes comprehensive error handling for all operations
+	 * @param choice User's validated menu selection
 	 */
+
 	private void executeChoice(int choice) {
 		try {
 			switch (choice) {
-				case 1:
-					addPatient();
-					break;
-				case 2:
-					patientManagement.printPatients();
-					break;
-				case 3:
-					patientManagement.printNextPatient();
-					break;
-				case 4:
-					callNextPatient();
-					break;
-				case 5:
-					removePatient();
-					break;
-				case 6:
-					patientManagement.printStatistics();
-					break;
-				case 7:
-					addPatientNotes();
-					break;
-				case 8:
-					searchPatientByName();
-					break;
-				case 9:
-					changePatientType();
-					break;
-				case 10:
-					viewPatientNoteHistory();
-					break;
-				case 11:
-					System.out.println(BRIGHT_YELLOW + "Exiting..." + RESET);
-					break;
-				default:
-					System.out.println(BRIGHT_RED + "Invalid choice. Please try again." + RESET);
-					break;
+				case 1: addPatient(); break;
+				case 2: patientManagement.printPatients(); break;
+				case 3: patientManagement.printNextPatient(); break;
+				case 4: callNextPatient(); break;
+				case 5: removePatient(); break;
+				case 6: patientManagement.printStatistics(); break;
+				case 7: addPatientNotes(); break;
+				case 8: searchPatientByName(); break;
+				case 9: changePatientType(); break;
+				case 10: viewPatientNoteHistory(); break;
+				case 11: System.out.println(YELLOW + "Exiting..." + RESET); break;
 			}
 		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "An error occurred: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
+			System.out.println(RED + "Error: " + e.getMessage() + RESET);
 		}
 	}
 
 	/**
-	 * Handles searching for patients by name
-	 * Uses the PatientManagement search functionality
-	 */
-	private void searchPatientByName() {
-		try {
-			System.out.println("\n" + TEAL + BOLD + "=== SEARCH PATIENT BY NAME ===" + RESET);
-
-			// Check if there are any patients
-			if (patientManagement.getTotalPatientCount() == 0) {
-				System.out.println(BRIGHT_RED + "No patients in queue to search." + RESET);
-				return;
-			}
-
-			System.out.print(BRIGHT_WHITE + "Enter patient name (or part of name) to search: " + RESET);
-			String searchName = scanner.nextLine().trim();
-
-			if (searchName.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Search name cannot be empty." + RESET);
-				return;
-			}
-
-			// Use PatientManagement's search functionality
-			patientManagement.printSearchResults(searchName);
-
-		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error searching for patient: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
-		}
-	}
-
-	/**
-	 * Handles changing a patient's type (Emergency, Senior, Regular)
-	 * Enhanced with age validation for Senior patient type
-	 */
-	private void changePatientType() {
-		try {
-			System.out.println("\n" + PINK + BOLD + "=== CHANGE PATIENT TYPE ===" + RESET);
-
-			// Check if there are any patients
-			if (patientManagement.getTotalPatientCount() == 0) {
-				System.out.println(BRIGHT_RED + "No patients in queue to change type." + RESET);
-				return;
-			}
-
-			// Show current patients
-			patientManagement.printPatients();
-
-			System.out.println(BRIGHT_WHITE + "\nEnter the name of the patient to change type:" + RESET);
-			System.out.print(BRIGHT_WHITE + "Patient name: " + RESET);
-			String patientName = scanner.nextLine().trim();
-
-			if (patientName.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Name cannot be empty." + RESET);
-				return;
-			}
-
-			// Check if patient exists
-			Patient patient = patientManagement.findPatientByExactName(patientName);
-			if (patient == null) {
-				System.out.println(BRIGHT_RED + "Patient '" + patientName + "' not found in queue." + RESET);
-				return;
-			}
-
-			// Show current patient type and age
-			System.out.println(BRIGHT_WHITE + "Current patient type: " + patient.getPatientType() + RESET);
-			System.out.println(BRIGHT_WHITE + "Patient age: " + patient.getAge() + " years" + RESET);
-
-			// Get new patient type
-			String newType = getNewPatientType();
-			if (newType == null) {
-				System.out.println(BRIGHT_YELLOW + "Operation cancelled." + RESET);
-				return;
-			}
-
-			// AGE VALIDATION: Block changing to Senior if patient is under 75
-			if (newType.equals("Senior") && patient.getAge() < 75) {
-				System.out.println(BRIGHT_RED + "ERROR: Cannot change patient to Senior type!" + RESET);
-				System.out.println(BRIGHT_RED + "Patient " + patientName + " is only " + patient.getAge() + 
-								   " years old. Senior status requires age 75 or older." + RESET);
-				System.out.println(GOLD + "Only patients aged 75+ can be classified as Senior patients." + RESET);
-				return;
-			}
-
-			// Confirm the change
-			System.out.print(BRIGHT_YELLOW + "Are you sure you want to change " + patientName + 
-							" from " + patient.getPatientType() + " to " + newType + "? (y/n): " + RESET);
-			String confirmation = scanner.nextLine().trim().toLowerCase();
-
-			if (!confirmation.equals("y") && !confirmation.equals("yes")) {
-				System.out.println(BRIGHT_YELLOW + "Operation cancelled." + RESET);
-				return;
-			}
-
-			// Attempt to change patient type
-			boolean success = patientManagement.changePatientType(patientName, newType);
-
-			if (!success) {
-				System.out.println(BRIGHT_RED + "Failed to change patient type. Please try again." + RESET);
-			} else {
-				// Display updated queue summary
-				displayQueueSummary();
-			}
-
-		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error changing patient type: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
-		}
-	}
-
-	/**
-	 * Gets the new patient type from user input
-	 * Enhanced with better color coding and age requirement information
-	 *
-	 * @return New patient type string, or null if cancelled
-	 */
-	private String getNewPatientType() {
-		System.out.println(BRIGHT_WHITE + "\nAvailable patient types:" + RESET);
-		System.out.println(BRIGHT_RED + "[1] Emergency" + RESET);
-		System.out.println(ORANGE + "[2] Senior " + DARK_GRAY + "(requires age 75+)" + RESET);
-		System.out.println(BRIGHT_BLUE + "[3] Regular" + RESET);
-		System.out.println(BRIGHT_YELLOW + "[4] Cancel" + RESET);
-
-		int choice = -1;
-		boolean validInput = false;
-
-		while (!validInput) {
-			try {
-				System.out.print(BRIGHT_WHITE + "Select new patient type (1-4): " + RESET);
-				choice = scanner.nextInt();
-				scanner.nextLine(); // Consume leftover newline
-
-				if (choice >= 1 && choice <= 4) {
-					validInput = true;
-				} else {
-					System.out.println(BRIGHT_RED + "Please enter a number between 1 and 4." + RESET);
-				}
-
-			} catch (InputMismatchException e) {
-				System.out.println(BRIGHT_RED + "Invalid input! Please enter a number between 1 and 4." + RESET);
-				scanner.nextLine(); // Clear invalid input
-			}
-		}
-
-		switch (choice) {
-			case 1:
-				return "Emergency";
-			case 2:
-				return "Senior";
-			case 3:
-				return "Regular";
-			case 4:
-				return null; // Cancel
-			default:
-				return null;
-		}
-	}
-
-	/**
-	 * Handles viewing a patient's complete note history
-	 */
-	private void viewPatientNoteHistory() {
-		try {
-			System.out.println("\n" + LIME + BOLD + "=== VIEW PATIENT NOTE HISTORY ===" + RESET);
-
-			// Check if there are any patients
-			if (patientManagement.getTotalPatientCount() == 0) {
-				System.out.println(BRIGHT_RED + "No patients in queue to view notes." + RESET);
-				return;
-			}
-
-			// Show current patients
-			patientManagement.printPatients();
-
-			System.out.println(BRIGHT_WHITE + "\nEnter the name of the patient to view note history:" + RESET);
-			System.out.print(BRIGHT_WHITE + "Patient name: " + RESET);
-			String patientName = scanner.nextLine().trim();
-
-			if (patientName.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Name cannot be empty." + RESET);
-				return;
-			}
-
-			// Find patient in the system
-			Patient patient = patientManagement.findPatientByExactName(patientName);
-			if (patient != null) {
-				System.out.println("\n" + LIME + BOLD + "=== NOTE HISTORY FOR: " + patient.getName() + " ===" + RESET);
-				System.out.println(BRIGHT_WHITE + "Patient Type: " + patient.getPatientType() + RESET);
-				System.out.println(BRIGHT_WHITE + "Age: " + patient.getAge() + " | Birthday: " + patient.getBirthday() + RESET);
-				System.out.println(TEAL + "Complete Note History:" + RESET);
-				System.out.println(LAVENDER + patient.getFormattedNotesHistory() + RESET);
-			} else {
-				System.out.println(BRIGHT_RED + "Patient '" + patientName + "' not found in queue." + RESET);
-			}
-
-		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error viewing note history: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
-		}
-	}
-
-	/**
-	 * Handles adding a new patient to the system
-	 * Collects patient information and creates appropriate patient object
-	 * Includes input validation for all fields
+	 * Handles adding a new patient to the queue system
+	 * Automatically determines patient type based on age and emergency status:
+	 * - Emergency patients get highest priority regardless of age
+	 * - Patients 75+ become Senior patients (unless emergency)
+	 * - All others become Regular patients
 	 */
 	private void addPatient() {
 		try {
-			System.out.println("\n" + BRIGHT_GREEN + BOLD + "=== ADD NEW PATIENT ===" + RESET);
+			System.out.println("\n" + GREEN + "=== ADD NEW PATIENT ===" + RESET);
 
-			// Get patient name
-			String name = getPatientName();
+			// Collect patient information with validation
+			String name = getInput("Enter patient name: ");
+			int age = getIntInput("Enter patient age: ", 0, 150);
+			LocalDate birthday = getDateInput("Enter birthday (yyyy-MM-dd): ");
+			boolean isEmergency = getBooleanInput("Is this an emergency patient? (y/n): ");
+			String notes = getInput("Enter optional notes (press Enter to skip): ");
 
-			// Get patient age
-			int age = getPatientAge();
-
-			// Get patient birthday
-			LocalDate birthday = getPatientBirthday();
-
-			// Get emergency status
-			boolean isEmergency = getEmergencyStatus();
-
-			// Get optional notes
-			String notes = getPatientNotes();
-
-			// Create appropriate patient object
+			// Create appropriate patient type based on priority rules
 			Patient patient;
 			if (isEmergency) {
 				patient = new EmergencyPatient(name, age, birthday, notes);
@@ -413,272 +145,255 @@ public class Controller {
 				patient = new RegularPatient(name, age, birthday, notes);
 			}
 
-			// Add patient to management system
 			patientManagement.queuePatient(patient);
-
-			// Display queue status after adding
+			System.out.println(GREEN + "Patient added successfully!" + RESET);
 			displayQueueSummary();
 
 		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error adding patient: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Patient was not added. Please try again." + RESET);
+			System.out.println(RED + "Error adding patient: " + e.getMessage() + RESET);
 		}
 	}
 
 	/**
-	 * Handles removing a patient from the system
-	 * Shows current patients and allows user to select which one to remove
+	 * Removes a patient from the queue by name
+	 * Shows current queue before removal for user reference
 	 */
+
 	private void removePatient() {
-		try {
-			System.out.println("\n" + BRIGHT_YELLOW + BOLD + "=== REMOVE PATIENT ===" + RESET);
-
-			// Check if there are any patients
-			if (patientManagement.getTotalPatientCount() == 0) {
-				System.out.println(BRIGHT_RED + "No patients in queue to remove." + RESET);
-				return;
-			}
-
-			// Show current patients
-			patientManagement.printPatients();
-
-			System.out.println(BRIGHT_WHITE + "\nEnter the name of the patient to remove:" + RESET);
-			System.out.print(BRIGHT_WHITE + "Patient name: " + RESET);
-			String nameToRemove = scanner.nextLine().trim();
-
-			if (nameToRemove.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Name cannot be empty." + RESET);
-				return;
-			}
-
-			// Try to remove the patient
-			boolean removed = patientManagement.removePatient(nameToRemove);
-
-			if (removed) {
-				System.out.println(BRIGHT_GREEN + "Patient '" + nameToRemove + "' has been removed from the queue." + RESET);
-				displayQueueSummary();
-			} else {
-				System.out.println(BRIGHT_RED + "Patient '" + nameToRemove + "' not found in queue." + RESET);
-			}
-
-		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error removing patient: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
+		if (checkEmptyQueue()) return;
+		
+		patientManagement.printPatients();
+		String name = getInput("Enter patient name to remove: ");
+		
+		if (patientManagement.removePatient(name)) {
+			System.out.println(GREEN + "Patient removed successfully!" + RESET);
+			displayQueueSummary();
+		} else {
+			System.out.println(RED + "Patient not found." + RESET);
 		}
 	}
 
 	/**
-	 * Handles adding notes to an existing patient
-	 * Notes are appended to existing note history with timestamp
+	 * Adds timestamped notes to an existing patient's record
+	 * Notes are appended to patient's note history for tracking purposes
 	 */
 	private void addPatientNotes() {
-		try {
-			System.out.println("\n" + LAVENDER + BOLD + "=== ADD PATIENT NOTES ===" + RESET);
-
-			// Check if there are any patients
-			if (patientManagement.getTotalPatientCount() == 0) {
-				System.out.println(BRIGHT_RED + "No patients in queue to add notes to." + RESET);
-				return;
-			}
-
-			// Show current patients
-			patientManagement.printPatients();
-
-			System.out.println(BRIGHT_WHITE + "\nEnter the name of the patient to add notes to:" + RESET);
-			System.out.print(BRIGHT_WHITE + "Patient name: " + RESET);
-			String patientName = scanner.nextLine().trim();
-
-			if (patientName.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Name cannot be empty." + RESET);
-				return;
-			}
-
-			System.out.print(BRIGHT_WHITE + "Enter notes for " + patientName + ": " + RESET);
-			String notes = scanner.nextLine().trim();
-
-			if (notes.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Notes cannot be empty." + RESET);
-				return;
-			}
-
-			// Find and update patient notes
-			Patient patient = patientManagement.findPatientByExactName(patientName);
-			if (patient != null) {
-				patient.addNote(notes); // This will append with timestamp
-				System.out.println(BRIGHT_GREEN + "Notes added successfully for patient '" + patientName + "'." + RESET);
-				System.out.println(TEAL + "Note added: " + notes + RESET);
-			} else {
-				System.out.println(BRIGHT_RED + "Patient '" + patientName + "' not found in queue." + RESET);
-			}
-
-		} catch (Exception e) {
-			System.out.println(BRIGHT_RED + "Error adding notes: " + e.getMessage() + RESET);
-			System.out.println(BRIGHT_YELLOW + "Please try again." + RESET);
+		if (checkEmptyQueue()) return;
+		
+		patientManagement.printPatients();
+		String name = getInput("Enter patient name: ");
+		String notes = getInput("Enter notes: ");
+		
+		Patient patient = patientManagement.findPatientByExactName(name);
+		if (patient != null) {
+			patient.addNote(notes); // Automatically adds timestamp
+			System.out.println(GREEN + "Notes added successfully!" + RESET);
+		} else {
+			System.out.println(RED + "Patient not found." + RESET);
 		}
 	}
 
 	/**
-	 * Gets and validates patient name
-	 *
-	 * @return Valid patient name (non-empty)
+	 * Searches for patients by name (supports partial matching)
+	 * Useful for finding patients when exact name spelling is uncertain
 	 */
-	private String getPatientName() {
-		String name;
-		do {
-			System.out.print(BRIGHT_WHITE + "Enter patient name: " + RESET);
-			name = scanner.nextLine().trim();
 
-			if (name.isEmpty()) {
-				System.out.println(BRIGHT_RED + "Name cannot be empty. Please enter a valid name." + RESET);
-			}
-		} while (name.isEmpty());
-
-		return name;
+	private void searchPatientByName() {
+		if (checkEmptyQueue()) return;
+		
+		String searchName = getInput("Enter name to search: ");
+		patientManagement.printSearchResults(searchName);
 	}
 
 	/**
-	 * Gets and validates patient age
-	 *
-	 * @return Valid age (0-150)
+	 * Changes a patient's priority type with age validation
+	 * Enforces business rule: Senior type requires age 75+
+	 * Allows switching between Emergency, Senior, and Regular types
 	 */
-	private int getPatientAge() {
-		int age = -1;
-		boolean validAge = false;
-
-		while (!validAge) {
-			try {
-				System.out.print(BRIGHT_WHITE + "Enter patient age: " + RESET);
-				age = scanner.nextInt();
-				scanner.nextLine(); // Consume leftover newline
-
-				if (age >= 0 && age <= 150) {
-					validAge = true;
-				} else {
-					System.out.println(BRIGHT_RED + "Please enter a valid age between 0 and 150." + RESET);
-				}
-
-			} catch (InputMismatchException e) {
-				System.out.println(BRIGHT_RED + "Invalid input! Please enter a number for age." + RESET);
-				scanner.nextLine(); // Clear invalid input
-			}
+	private void changePatientType() {
+		if (checkEmptyQueue()) return;
+		
+		patientManagement.printPatients();
+		String name = getInput("Enter patient name: ");
+		
+		Patient patient = patientManagement.findPatientByExactName(name);
+		if (patient == null) {
+			System.out.println(RED + "Patient not found." + RESET);
+			return;
 		}
 
-		return age;
-	}
+		String newType = getNewPatientType();
+		if (newType == null) return;
 
-	/**
-	 * Gets and validates patient birthday
-	 *
-	 * @return Valid LocalDate for birthday
-	 */
-	private LocalDate getPatientBirthday() {
-		LocalDate birthday = null;
-		boolean validDate = false;
-
-		while (!validDate) {
-			try {
-				System.out.print(BRIGHT_WHITE + "Enter birthday (yyyy-MM-dd, e.g., 1990-05-15): " + RESET);
-				String dateInput = scanner.nextLine().trim();
-				birthday = LocalDate.parse(dateInput, DATE_FORMATTER);
-
-				// Check if date is reasonable (not in the future, not too old)
-				LocalDate today = LocalDate.now();
-				LocalDate earliestDate = today.minusYears(150);
-
-				if (birthday.isAfter(today)) {
-					System.out.println(BRIGHT_RED + "Birthday cannot be in the future. Please enter a valid date." + RESET);
-				} else if (birthday.isBefore(earliestDate)) {
-					System.out.println(BRIGHT_RED + "Birthday seems too old. Please enter a valid date." + RESET);
-				} else {
-					validDate = true;
-				}
-
-			} catch (DateTimeParseException e) {
-				System.out.println(BRIGHT_RED + "Invalid date format! Please use yyyy-MM-dd format (e.g., 1990-05-15)." + RESET);
-			}
+		// Business rule: Age validation for Senior patient type
+		if (newType.equals("Senior") && patient.getAge() < 75) {
+			System.out.println(RED + "Patient must be 75+ for Senior type." + RESET);
+			return;
 		}
 
-		return birthday;
-	}
-
-	/**
-	 * Gets emergency status from user
-	 *
-	 * @return true if emergency patient, false if regular patient
-	 */
-	private boolean getEmergencyStatus() {
-		String input;
-		do {
-			System.out.print(BRIGHT_WHITE + "Is this an emergency patient? (y/n): " + RESET);
-			input = scanner.nextLine().trim().toLowerCase();
-
-			if (!input.equals("y") && !input.equals("n") &&
-					!input.equals("yes") && !input.equals("no")) {
-				System.out.println(BRIGHT_RED + "Please enter 'y' for yes or 'n' for no." + RESET);
-			}
-		} while (!input.equals("y") && !input.equals("n") &&
-				!input.equals("yes") && !input.equals("no"));
-
-		return input.equals("y") || input.equals("yes");
-	}
-
-	/**
-	 * Gets optional notes for patient
-	 *
-	 * @return Notes string (can be empty)
-	 */
-	private String getPatientNotes() {
-		System.out.print(BRIGHT_WHITE + "Enter optional notes (press Enter to skip): " + RESET);
-		return scanner.nextLine().trim();
-	}
-
-	/**
-	 * Calls the next patient and provides confirmation
-	 * Shows additional information about remaining patients
-	 */
-	private void callNextPatient() {
-		Patient calledPatient = patientManagement.dequeuePatient();
-
-		if (calledPatient != null) {
-			System.out.println("\n" + BRIGHT_GREEN + BOLD + "--- Patient Called ---" + RESET);
-			System.out.println(BRIGHT_WHITE + "Patient: " + calledPatient.getName() + RESET);
-
-			// Color code patient type
-			String patientType = calledPatient.getPatientType();
-			if (patientType.equals("Emergency")) {
-				System.out.println(BRIGHT_RED + "Type: " + calledPatient.getTypeIcon() + RESET);
-			} else if (patientType.equals("Senior")) {
-				System.out.println(ORANGE + "Type: " + calledPatient.getTypeIcon() + RESET);
-			} else {
-				System.out.println(BRIGHT_BLUE + "Type: " + calledPatient.getTypeIcon() + RESET);
-			}
-
-			System.out.println(BRIGHT_WHITE + "Age: " + calledPatient.getAge() + RESET);
-			System.out.println(BRIGHT_WHITE + "Birthday: " + calledPatient.getBirthday() + RESET);
-			System.out.println(BRIGHT_WHITE + "Priority Level: " + calledPatient.getPriorityLevel() + RESET);
-
-			// Show latest note if any
-			if (!calledPatient.getLatestNote().isEmpty()) {
-				System.out.println(LAVENDER + "Latest Note: " + calledPatient.getLatestNote() + RESET);
-			}
-
-			// Show remaining patient count
+		if (getBooleanInput("Confirm change to " + newType + "? (y/n): ")) {
+			patientManagement.changePatientType(name, newType);
 			displayQueueSummary();
 		}
 	}
 
 	/**
-	 * Displays a summary of current queue status with enhanced colors
+	 * Displays complete note history for a patient
+	 * Shows all timestamped notes in chronological order
 	 */
-	private void displayQueueSummary() {
-		int totalRemaining = patientManagement.getTotalPatientCount();
-		System.out.println(TEAL + "\n--- Queue Summary ---" + RESET);
-		System.out.println(TEAL + "Patients remaining in queue: " + totalRemaining + RESET);
 
-		if (totalRemaining > 0) {
-			System.out.println(BRIGHT_RED + "Emergency patients: " + patientManagement.getEmergencyCount() + RESET);
-			System.out.println(ORANGE + "Senior patients: " + patientManagement.getSeniorCount() + RESET);
-			System.out.println(BRIGHT_BLUE + "Regular patients: " + patientManagement.getRegularCount() + RESET);
+	private void viewPatientNoteHistory() {
+		if (checkEmptyQueue()) return;
+		
+		patientManagement.printPatients();
+		String name = getInput("Enter patient name: ");
+		
+		Patient patient = patientManagement.findPatientByExactName(name);
+		if (patient != null) {
+			System.out.println("\n" + CYAN + "=== NOTE HISTORY: " + name + " ===" + RESET);
+			System.out.println(patient.getFormattedNotesHistory());
+		} else {
+			System.out.println(RED + "Patient not found." + RESET);
 		}
+	}
+
+	/**
+	 * Calls and removes the next patient from queue based on priority
+	 * Priority order: Emergency > Senior > Regular (within each type: FIFO)
+	 * Displays patient details and updates queue summary
+	 */
+	private void callNextPatient() {
+		Patient patient = patientManagement.dequeuePatient();
+		if (patient != null) {
+			System.out.println("\n" + GREEN + "Patient Called: " + patient.getName() + RESET);
+			System.out.println("Type: " + patient.getTypeIcon());
+			System.out.println("Age: " + patient.getAge());
+			displayQueueSummary();
+		}
+	}
+
+	// ========== UTILITY METHODS ==========
+	
+	/**
+	 * Checks if the patient queue is empty and displays appropriate message
+	 * @return true if queue is empty, false otherwise
+	 */
+	private boolean checkEmptyQueue() {
+		if (patientManagement.getTotalPatientCount() == 0) {
+			System.out.println(RED + "No patients in queue." + RESET);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Generic input method with validation for required and optional fields
+	 * Handles empty input validation based on prompt context
+	 * @param prompt The input prompt to display to user
+	 * @return User input string (trimmed)
+	 */
+	private String getInput(String prompt) {
+		String input;
+		do {
+			System.out.print(prompt);
+			input = scanner.nextLine().trim();
+			if (input.isEmpty() && prompt.contains("optional")) break;
+			if (input.isEmpty()) System.out.println(RED + "Input cannot be empty." + RESET);
+		} while (input.isEmpty() && !prompt.contains("optional"));
+		return input;
+	}
+
+	/**
+	 * Gets and validates integer input within specified range
+	 * Handles InputMismatchException and range validation
+	 * @param prompt Message to display to user
+	 * @param min Minimum acceptable value (inclusive)
+	 * @param max Maximum acceptable value (inclusive)
+	 * @return Valid integer within specified range
+	 */
+	private int getIntInput(String prompt, int min, int max) {
+		int value = -1;
+		while (value < min || value > max) {
+			try {
+				System.out.print(prompt);
+				value = scanner.nextInt();
+				scanner.nextLine(); // Consume leftover newline
+				if (value < min || value > max) {
+					System.out.println(RED + "Enter value between " + min + " and " + max + RESET);
+				}
+			} catch (InputMismatchException e) {
+				System.out.println(RED + "Invalid input!" + RESET);
+				scanner.nextLine(); // Clear input buffer
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Gets and validates date input in yyyy-MM-dd format
+	 * Validates date range (not future, not older than 150 years)
+	 * @param prompt Message to display to user
+	 * @return Valid LocalDate object
+	 */
+	private LocalDate getDateInput(String prompt) {
+		LocalDate date = null;
+		while (date == null) {
+			try {
+				System.out.print(prompt);
+				String input = scanner.nextLine().trim();
+				date = LocalDate.parse(input, DATE_FORMATTER);
+				
+				// Validate reasonable date range
+				if (date.isAfter(LocalDate.now()) || date.isBefore(LocalDate.now().minusYears(150))) {
+					System.out.println(RED + "Invalid date range." + RESET);
+					date = null;
+				}
+			} catch (DateTimeParseException e) {
+				System.out.println(RED + "Invalid date format! Use yyyy-MM-dd" + RESET);
+			}
+		}
+		return date;
+	}
+
+	/**
+	 * Gets boolean input from user (y/n, yes/no)
+	 * Case-insensitive, accepts y/n or yes/no variations
+	 * @param prompt Question to display to user
+	 * @return true for yes, false for no
+	 */
+
+	private boolean getBooleanInput(String prompt) {
+		String input;
+		do {
+			System.out.print(prompt);
+			input = scanner.nextLine().trim().toLowerCase();
+		} while (!input.matches("y|n|yes|no"));
+		return input.startsWith("y");
+	}
+
+	/**
+	 * Displays patient type selection menu and gets user choice
+	 * @return Selected patient type string, or null if cancelled
+	 */
+	private String getNewPatientType() {
+		System.out.println("[1] Emergency [2] Senior [3] Regular [4] Cancel");
+		int choice = getIntInput("Select type: ", 1, 4);
+		
+		switch (choice) {
+			case 1: return "Emergency";
+			case 2: return "Senior";
+			case 3: return "Regular";
+			default: return null; // Cancel operation
+		}
+	}
+
+	/**
+	 * Displays current queue summary with patient count
+	 * Provides quick overview of remaining patients in system
+	 */
+
+	private void displayQueueSummary() {
+		System.out.println(CYAN + "Queue: " + patientManagement.getTotalPatientCount() + 
+						   " patients remaining" + RESET);
 	}
 }
