@@ -13,7 +13,8 @@ This program efficiently manages patients in a medical waiting room using a thre
 - **👴 Senior Queue** - Medium priority for patients 75+ years old
 - **👥 Regular Queue** - Standard FIFO processing for all other patients
 - **⚡ Automatic Queue Sorting** - Patients are automatically ordered by priority and arrival time
-- **📞 Smart Patient Calling** - Next patient is determined by priority system, not manual selection
+- **📞 Smart Patient Calling** - Next patient is determined by priority system
+- **⚖️ Queue Capacity Management** - Maximum limits for each queue type
 
 ### 📝 Patient Information & Documentation
 - **Complete Patient Profiles** - Name, age, birthday, and patient type
@@ -21,12 +22,19 @@ This program efficiently manages patients in a medical waiting room using a thre
 - **📖 Complete Note History** - View full chronological note timeline for any patient
 - **🔄 Dynamic Type Changes** - Change patient priority with automatic validation
 - **⏰ Arrival Time Tracking** - Automatic timestamp when patients join the queue
+- **✏️ Patient Information Editing** - Modify existing patient details
 
 ### 🔍 Search & Analytics
 - **🔎 Fuzzy Name Search** - Find patients with partial name matching
 - **📊 Real-time Statistics Dashboard** - Live queue analytics and composition
 - **📈 Daily Metrics** - Track total patients and emergencies processed
 - **🎨 Color-coded Interface** - Visual indicators for different patient types and actions
+
+### 🛠️ Advanced Management
+- **🗑️ Bulk Operations** - Clear entire queues or patient types
+- **📊 Queue Health Check** - System status and capacity monitoring
+- **⚡ Emergency Override** - Override capacity limits for emergencies
+- **🔄 Queue Optimization** - Analyze and optimize queue distribution
 
 ## 🎮 Interactive Menu
 
@@ -42,7 +50,11 @@ This program efficiently manages patients in a medical waiting room using a thre
 | **8** | 🔵 Search Patient by Name | Find patients with partial matching |
 | **9** | 🟡 Change Patient Type | Modify priority level with validation |
 | **10** | 🔵 View Patient Note History | Complete chronological note timeline |
-| **11** | 🔴 Exit | Safe application shutdown |
+| **11** | 🔵 Edit Patient Information | Modify existing patient details |
+| **12** | 🔴 Bulk Operations | Manage multiple patients at once |
+| **13** | 🟡 Queue Management | Advanced queue control features |
+| **14** | 🔵 System Status | View detailed system information |
+| **15** | 🔴 Exit | Safe application shutdown |
 
 ## ⚙️ Priority System Logic
 
@@ -95,21 +107,6 @@ The application features a rich color-coded interface:
 - **🟢 Green** - Success messages and confirmations
 - **🟡 Yellow** - Warnings and input prompts
 - **🔵 Cyan** - Headers and system information
-
-## 🔜 Future Enhancements
-
-### Planned Features
-- **⏱️ Waiting Time Display** - Show how long each patient has been waiting
-- **📊 Enhanced Analytics** - Wait time statistics and trends
-- **🔢 Queue Capacity Limits** - Maximum patients per queue with notifications
-- **✏️ Patient Information Editing** - Modify existing patient details
-- **🗑️ Bulk Queue Operations** - Clear entire queues or patient types
-
-### Technical Improvements
-- **🧪 Unit Testing Suite** - Comprehensive test coverage
-- **📝 Logging System** - Detailed application logging
-- **⚡ Performance Optimization** - Enhanced queue operations
-- **🔒 Input Sanitization** - Advanced security validation
 
 ---
 
