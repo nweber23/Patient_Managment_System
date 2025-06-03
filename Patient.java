@@ -111,4 +111,26 @@ public class Patient {
         this.type = newType;
         addNote("Patient type changed from " + oldType.name() + " to " + newType.name());
     }
+    
+    // Setter for name
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name.trim();
+        }
+    }
+
+    // Setter for age
+    public void setAge(int age) {
+        if (age >= 0 && age <= 150) {
+            this.age = age;
+        }
+    }
+
+    // Setter for birthday
+    public void setBirthday(LocalDate birthday) {
+        if (birthday != null && !birthday.isAfter(LocalDate.now()) && 
+            !birthday.isBefore(LocalDate.now().minusYears(150))) {
+            this.birthday = birthday;
+        }
+    }
 }

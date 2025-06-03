@@ -207,6 +207,53 @@ public class PatientManagement {
         return patient;
     }
 
+    // Method to get count by patient type
+    public int getCountByType(PatientType type) {
+        return (int) patientQueue.stream()
+            .filter(p -> p.getType() == type)
+            .count();
+    }
+
+    // Method to clear queue by type
+    public List<String> clearQueueByType(PatientType type) {
+        List<String> removedPatients = patientQueue.stream()
+            .filter(p -> p.getType() == type)
+            .map(Patient::getName)
+            .collect(Collectors.toList());
+        
+        patientQueue.removeIf(p -> p.getType() == type);
+        return removedPatients;
+    }
+
+    // Method to clear all queues
+    public List<String> clearAllQueues() {
+        List<String> removedPatients = patientQueue.stream()
+            .map(Patient::getName)
+            .collect(Collectors.toList());
+        
+        patientQueue.clear();
+        return removedPatients;
+    }
+
+    // Method to get patients in age range
+    public List<String> getPatientsInAgeRange(int minAge, int maxAge) {
+        return patientQueue.stream()
+            .filter(p -> p.getAge() >= minAge && p.getAge() <= maxAge)
+            .map(p -> p.getName() + " (Age: " + p.getAge() + ", Type: " + p.getType().name() + ")")
+            .collect(Collectors.toList());
+    }
+
+    // Method to clear patients by age range
+    public List<String> clearByAgeRange(int minAge, int maxAge) {
+        List<String> removedPatients = patientQueue.stream()
+            .filter(p -> p.getAge() >= minAge && p.getAge() <= maxAge)
+            .map(Patient::getName)
+            .collect(Collectors.toList());
+        
+        patientQueue.removeIf(p -> p.getAge() >= minAge && p.getAge() <= maxAge);
+        return removedPatients;
+    }
+
     // Getter methods
     public int getTotalPatientCount() { return patientQueue.size(); }
     public int getEmergencyCount() { return (int) patientQueue.stream().filter(p -> p.getType() == PatientType.EMERGENCY).count(); }
